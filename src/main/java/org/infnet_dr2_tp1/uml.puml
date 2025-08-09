@@ -1,0 +1,40 @@
+@startuml
+class Library {
+    - books : List<Book>
+    - users : List<User>
+    - loans : List<Loan>
+
+    + addBook(book : Book)
+    + removeBook(book : Book)
+    + findBook(title : String)
+    + addUser(user : User)
+    + removeUser(user : User)
+    + loanBook(book : Book, user : User)
+    + returnBook(book : Book, user : User)
+}
+
+class Book {
+    - title : String
+    - author : String
+    - isbn : String
+}
+
+class Loan {
+    - book : Book
+    - user : User
+    - dueDate : Date
+    + isOverdue() : boolean
+}
+
+class User {
+    - name : String
+    - id : String
+}
+
+Library "1" -- "*" Book
+Library "1" -- "*" User
+Library "1" -- "*" Loan
+Loan "*" --> "1" Book
+Loan "*" --> "1" User
+
+@enduml
