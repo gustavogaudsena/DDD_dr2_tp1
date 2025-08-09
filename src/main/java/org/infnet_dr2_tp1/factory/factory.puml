@@ -1,0 +1,33 @@
+@startuml
+
+interface LibraryItem
+
+class Book implements LibraryItem {
+    - title : String
+    - author : String
+    - isbn : String
+}
+
+class DVD implements LibraryItem {
+    - id : String
+    - title : String
+    - size : double
+}
+
+abstract class LibraryItemFactory {
+    + create() : LibraryItem
+}
+
+class BookFactory extends LibraryItemFactory {
+    + create() : LibraryItem
+}
+
+class DVDFactory extends LibraryItemFactory {
+    + create() : LibraryItem
+}
+
+LibraryItemFactory <|-- BookFactory
+LibraryItemFactory <|-- DVDFactory
+LibraryItem <|.. Book
+LibraryItem <|.. DVD
+@enduml
