@@ -1,0 +1,39 @@
+@startuml
+class LibraryFacade {
+     - library: Library
+     + addBook(book : Book)
+     + removeBook(book : Book)
+     + findBook(title : String)
+     + addUser(user : User)
+     + removeUser(user : User)
+     + loanBook(book : Book, user : User)
+     + returnBook(book : Book, user : User)
+     + isLoanOverdue(loan: Loan) : boolean
+}
+
+class Library {
+    - books : List<Book>
+    - users : List<User>
+    - loans : List<Loan>
+    - instance: Library <<static>>
+    - Library()
+    + getInstance(): Library <<static>>
+    + addBook(book : Book)
+    + removeBook(book : Book)
+    + findBook(title : String)
+    + addUser(user : User)
+    + removeUser(user : User)
+    + loanBook(book : Book, user : User)
+    + returnBook(book : Book, user : User)
+}
+
+
+class Loan {
+      ...
+    + isOverdue() : boolean
+}
+
+LibraryFacade --> Library
+LibraryFacade ..> Loan
+
+@enduml
