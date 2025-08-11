@@ -1,0 +1,26 @@
+@startuml
+
+interface EventSubscriber<T> {
+    + update(data : T)
+}
+
+class EventManager<T> {
+    - listeners : List<EventSubscriber<T>>
+    + subscribe(listener : EventSubscriber<T>)
+    + unsubscribe(listener : EventSubscriber<T>)
+    + notifySubscribers(data : T)
+}
+
+class LoanObserver extends EventManager<Loan> {
+    + checkOverdueLoans(loans : ArrayList<Loan>)
+}
+
+class Loan {
+    + isOverdue() : boolean
+}
+
+EventManager "1" o-- "*" EventSubscriber
+EventManager <|-- LoanObserver
+LoanObserver ..> Loan
+
+@enduml
