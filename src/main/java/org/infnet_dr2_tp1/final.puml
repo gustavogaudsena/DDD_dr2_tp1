@@ -1,0 +1,123 @@
+@startuml
+
+    class LibraryFacade {
+         - library: Library
+         + createItem(factory : LibraryItemFactory)
+         + removeItem(item : LibraryItem)
+         + findBookByTitle(title: String)
+         + findUserById(id : String)
+         + addUser(user : User)
+         + removeUser(user : User)
+         + loanItem(item : LibraryItem, user : User)
+         + returnItem(item : LibraryItem, user : User)
+         + checkAndNotifyOverdueLoans()
+    }
+
+
+    class Library {
+        - libraryItems : List<LibraryItem>
+        - users : List<User>
+        - loans : List<Loan>
+        - instance: Library <<static>>
+        - loanEventManager: LoanObserver
+
+        - Library()
+
+        + getInstance(): Library <<static>>
+        + createItem(factory : LibraryItemFactory)
+        + removeItem(item: LibraryItem)
+        + find(strategy : FindStrategy, arg: String)
+        + addUser(user : User)
+        + removeUser(user : User)
+        + LoanItem(item : LibraryItem, user : User)
+        + returnItem(item : LibraryItem, user : User)
+    }
+
+    class User {
+        - name : String
+        - id : String
+    }
+
+    class Loan {
+        - item : LibraryItem
+        - user : User
+        - dueDate : Date
+        + isOverdue() : boolean
+    }
+
+    interface LibraryItem <<interface>>
+
+    class Book implements LibraryItem {
+        - title : String
+        - author : String
+        - isbn : String
+    }
+
+    class DVD implements LibraryItem {
+        - id : String
+        - title : String
+        - size : double
+    }
+     abstract class LibraryItemFactory <<abstract>> {
+            + create() : LibraryItem
+        }
+
+        class BookFactory extends LibraryItemFactory {
+            + create() : LibraryItem
+        }
+
+        class DVDFactory extends LibraryItemFactory {
+            + create() : LibraryItem
+        }
+
+
+    interface FindStrategy<T, U> <<interface>> {
+        + T find(U arg, List<T> database)
+    }
+
+    class FindUserByIdStrategy {
+        + User find(String id, List<User> users)
+    }
+
+    class FindBookByTitleStrategy {
+        + Book find(String title, List<Book> books)
+    }
+
+
+    interface EventSubscriber<T> <<interface>> {
+        + update(data : T)
+    }
+
+    class EventManager<T> {
+        - listeners : List<EventSubscriber<T>>
+        + subscribe(listener : EventSubscriber<T>)
+        + unsubscribe(listener : EventSubscriber<T>)
+        + notifySubscribers(data : T)
+    }
+
+    class LoanObserver extends EventManager<Loan> {
+        + checkOverdueLoans(loans : ArrayList<Loan>)
+    }
+
+
+LibraryFacade --> Library
+Library ..> LibraryItemFactory
+Library ..> FindStrategy
+Library "1" --> "1" LoanObserver
+
+LibraryItemFactory <|-- BookFactory
+LibraryItemFactory <|-- DVDFactory
+LibraryItem <|.. Book
+LibraryItem <|.. DVD
+FindStrategy <|.. FindUserByIdStrategy
+FindStrategy <|.. FindBookByTitleStrategy
+EventManager <|-- LoanObserver
+EventManager o-- EventSubscriber
+
+Library "1" -- "*" LibraryItem
+Library "1" -- "*" User
+Library "1" -- "*" Loan
+Loan "*" --> "1" LibraryItem
+Loan "*" --> "1" User
+
+@enduml
