@@ -1,0 +1,19 @@
+@startuml
+interface FindStrategy<T, U> {
+    +T find(U arg, List<T> database)
+}
+
+class FindUserByIdStrategy {
+    +User find(String id, List<User> users)
+}
+
+class FindBookByTitleStrategy {
+    +Book find(String title, List<Book> books)
+}
+
+FindStrategy <|.. FindUserByIdStrategy
+FindStrategy <|.. FindBookByTitleStrategy
+
+User <-- FindUserByIdStrategy
+Book <-- FindBookByTitleStrategy
+@enduml
